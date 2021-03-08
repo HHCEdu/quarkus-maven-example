@@ -1,12 +1,22 @@
 pipeline {
   agent any
+  tools {
+    // Install the Maven version configured as "M3" and add it to the path.
+    maven "Maven_3_5_3"
+  }
   stages {
     stage('Build') {
       steps {
-        withMaven(jdk: 'JavaSDK_8u221', maven: 'Maven_3_5_3')
-        sh 'mvn clean install'
+        git 'https://github.com/jglick/simple-maven-project-with-tests.git'
+        sh "mvn -Dmaven.test.failure.ignore=true clean package"
       }
+      post {
+        // If Maven was able to run the tests, even if some of the test
+        // failed, record the test results and archive the jar file.
+        success {
+          junit '**/target/surefire-reports/TEST-*.xml'
+          archiveArtifacts 'target/*.jar'
+        }
     }
-
   }
 }
