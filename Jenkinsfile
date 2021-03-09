@@ -8,9 +8,6 @@ node('docker') {
     archive 'target/*.jar'
   }
   stage('Static Code Analysis'){
-    sh 'mvn clean verify sonar:sonar
-    -Dsonar.projectName=quarkus-maven-example
-    -Dsonar.projectKey=quarkus-maven-example
-    -Dsonar.projectVersion=$BUILD_NUMBER';
+    sh 'mvn clean verify sonar:sonar -Dsonar.projectName=quarkus-maven-example -Dsonar.projectKey=quarkus-maven-example -Dsonar.projectVersion=$BUILD_NUMBER';
   }
 }
